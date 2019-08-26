@@ -198,7 +198,7 @@
             <td>{{$value.role=='admin'?'超级管理员':'普通用户'}}</td>
             <td class="text-center" data-id="{{$value._id}}">
                 <a href="javascript:;" class="btn btn-default btn-xs edit">编辑</a>
-                <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
+                <a href="javascript:;" class="btn btn-danger btn-xs delete">删除</a>
             </td>
         </tr>
         {{/each}}
@@ -290,18 +290,33 @@
             })
             //点击修改按钮时实现修改
         $('#editUser').on('click', function() {
-            // console.log(id);
-            $.ajax({
+                // console.log(id);
+                $.ajax({
 
-                type: 'put',
+                    type: 'put',
+                    url: '/users/' + id,
+                    data: $('#userForm').serialize(),
+                    success: function(res) {
+                        var indexx = arr.findIndex(item => item._id == id);
+                        arr[indexx] = res;
+                        $('#immg').attr('src', "../assets/img/default.png");
+                        render(arr);
+                        $('#userForm')[0].reset();
+
+                    }
+                })
+            })
+            //删除功能
+        $('tbody').on('click', '.delete', function() {
+            id = $(this).parent().attr('data-id');
+            $.ajax({
+                type: 'delete',
                 url: '/users/' + id,
-                data: $('#userForm').serialize(),
                 success: function(res) {
-                    var indexx = arr.findIndex(item => item._id == id);
-                    arr[indexx] = res;
-                    $('#immg').attr('src', "../assets/img/default.png");
-                    render(arr);
-                    $('#userForm')[0].reset();
+                    // console.log(res);
+                    var indexxx = arr.findIndex(item => item._id == id);
+                    arr.splice(indexxx, 1);
+                    render(arr)
 
                 }
             })
