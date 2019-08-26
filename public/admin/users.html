@@ -41,25 +41,26 @@
       </div> -->
             <div class="row">
                 <div class="col-md-4">
-                    <form>
+                    <form id="userForm">
                         <h2>添加新用户</h2>
                         <div class="form-group">
                             <label>头像</label>
                             <div class="form-group">
                                 <label class="form-image">
                   <input id="avatar" type="file">
-                  <img src="../assets/img/default.png">
+                  <img src="../assets/img/default.png" id="immg">
                   <i class="mask fa fa-upload"></i>
                 </label>
+                                <input type="hidden" name="avatar" id="imgSrc">
                             </div>
                         </div>
                         <div class="form-group">
                             <label>邮箱</label>
-                            <input name="email" class="form-control" type="email" placeholder="请输入邮箱">
+                            <input name="email" id="email" class="form-control" type="email" placeholder="请输入邮箱">
                         </div>
                         <div class="form-group">
                             <label>昵称</label>
-                            <input name="nickName" class="form-control" type="text" placeholder="请输入昵称">
+                            <input name="nickName" id="nickName" class="form-control" type="text" placeholder="请输入昵称">
                         </div>
                         <div class="form-group">
                             <label>密码</label>
@@ -67,22 +68,23 @@
                         </div>
                         <div class="form-group">
                             <div class="radio-inline">
-                                <label><input name="status" value="0" type="radio">未激活</label>
+                                <label><input name="status" value="0" type="radio" id="wjh" checked>未激活</label>
                             </div>
                             <div class="radio-inline">
-                                <label><input name="status" value="1" type="radio">激活</label>
+                                <label><input name="status" value="1" type="radio" id="jh">激活</label>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="radio-inline">
-                                <label><input name="role" value="admin" type="radio">超级管理员</label>
+                                <label><input name="role" value="admin" type="radio" id="admin">超级管理员</label>
                             </div>
                             <div class="radio-inline">
-                                <label><input name="role" value="normal" type="radio">普通用户</label>
+                                <label><input name="role" value="normal" type="radio" id="normal" checked>普通用户</label>
                             </div>
                         </div>
                         <div class="form-group">
-                            <button class="btn btn-primary" type="submit">添加</button>
+                            <button class="btn btn-primary" type="button" id="addUser">添加</button>
+                            <button class="btn btn-primary" type="button" id="editUser" style="display: none">修改</button>
                         </div>
                     </form>
                 </div>
@@ -193,9 +195,9 @@
             <td>{{$value.email}}</td>
             <td>{{$value.nickName}}</td>
             <td>{{$value.status==1?'激活':'未激活'}}</td>
-            <td>{{$value.role=='admin'?'管理员':'普通用户'}}</td>
-            <td class="text-center">
-                <a href="javascript:;" class="btn btn-default btn-xs">编辑</a>
+            <td>{{$value.role=='admin'?'超级管理员':'普通用户'}}</td>
+            <td class="text-center" data-id="{{$value._id}}">
+                <a href="javascript:;" class="btn btn-default btn-xs edit">编辑</a>
                 <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
             </td>
         </tr>
@@ -212,6 +214,7 @@
     <script src="../assets/js/conment.js"></script>
     <script>
         //声明一个数组
+        // var id;
         var arr = [];
         $.ajax({
             type: 'get',
@@ -219,7 +222,89 @@
             success: function(res) {
                 arr = res
                 render(arr)
+
             }
+        })
+
+
+        $('#addUser').on('click', function() {
+            let forData = $('#userForm').serialize();
+            $.ajax({
+                type: 'post',
+                url: '/users',
+                data: forData,
+                success: function(res) {
+                    arr.push(res);
+                    render(arr);
+                    $('#immg').attr('src', '../assets/img/default.png');
+                    $('#userForm')[0].reset();
+                }
+            })
+        })
+        $('#avatar').on('change', function() {
+                //创建FormDta
+                var forData = new FormData();
+                forData.append('avatar', this.files[0]);
+                $.ajax({
+                    type: 'post',
+                    url: '/upload',
+                    data: forData,
+                    //告诉Ajax方法不要解析DAta请求参数
+                    processData: false,
+                    contentType: false,
+                    success: function(res) {
+                        // console.log(res[0].avatar);
+                        $('#immg').attr('src', res[0].avatar);
+                        $('#imgSrc').val(res[0].avatar);
+
+                    }
+                })
+            })
+            //点击修改按钮
+        $('tbody').on('click', '.edit', function() {
+                id = $(this).parent().attr('data-id');
+                $('#userForm>h2').text('修改用户');
+                var eachTr = $(this).parents('tr');
+                $('#email').val(eachTr.children().eq(2).text());
+                $('#nickName').val(eachTr.children().eq(3).text());
+                var statuss = eachTr.children().eq(4).text();
+                var roles = eachTr.children().eq(5).text();
+                if (statuss == '激活') {
+                    $('#jh').prop('checked', true);
+                } else {
+                    $('#wjh').prop('checked', true)
+                }
+                if (roles == '超级管理员') {
+                    $('#admin').prop('checked', true);
+                } else {
+                    $('#normal').prop('checked', true)
+                }
+                var imgsrc1 = eachTr.children().eq(1).find('img').attr('src');
+                if (imgsrc1) {
+                    $('#immg').attr('src', imgsrc1);
+                } else {
+                    $('#immg').attr('src', "../assets/img/default.png");
+                }
+                $('#addUser').hide();
+                $('#editUser').show();
+            })
+            //点击修改按钮时实现修改
+        $('#editUser').on('click', function() {
+            // console.log(id);
+            $.ajax({
+
+                type: 'put',
+                url: '/users/' + id,
+                data: $('#userForm').serialize(),
+                success: function(res) {
+                    var indexx = arr.findIndex(item => item._id == id);
+                    arr[indexx] = res;
+                    $('#immg').attr('src', "../assets/img/default.png");
+                    render(arr);
+                    $('#userForm')[0].reset();
+
+                }
+            })
         })
 
         function render(arr) {
@@ -229,7 +314,6 @@
             $('tbody').html(str)
         }
     </script>
-    <script src="../assets/js/users.js"></script>
 </body>
 
 </html>
