@@ -1,7 +1,8 @@
 <script src="/login/status"></script>
 <script>
+    // console.log(isLogin);
     if (!isLogin) {
-        location.href = 'login.html'
+        location.href = "login.html";
     }
 </script>
 <!DOCTYPE html>
@@ -38,18 +39,18 @@
             <div class="page-action">
                 <!-- show when multiple checked -->
                 <a class="btn btn-danger btn-sm" href="javascript:;" style="display: none">批量删除</a>
-                <form class="form-inline" id="filterForm">
-                    <select name="category" class="form-control input-sm" id="allSort">
-                        <option value="all">所有分类</option>
-                    </select>
+                <form class="form-inline">
+                    <select name="category" class="form-control input-sm" id="category">
+            <option value="all">所有分类</option>
+          </select>
                     <select name="state" class="form-control input-sm" id="state">
-                    <option value="all">所有状态</option>
-                     <option value="0">草稿</option>
-                     <option value="1">已发布</option>
-                    </select>
-                    <button class="btn btn-default btn-sm" type="button" id="formBtn">筛选</button>
+            <option value="all">所有状态</option>
+            <option value="0">草稿</option>
+            <option value="1">已发布</option>
+          </select>
+                    <button class="btn btn-default btn-sm" type="button" id="btnSearch">筛选</button>
                 </form>
-                <ul class="pagination pagination-sm pull-right" id="pageBox">
+                <ul class="pagination pagination-sm pull-right">
 
                 </ul>
             </div>
@@ -66,38 +67,38 @@
                 </thead>
                 <tbody>
                     <!-- <tr>
-                        <td>随便一个名称</td>
-                        <td>小小</td>
-                        <td>潮科技</td>
-                        <td class="text-center">2016/10/07</td>
-                        <td class="text-center">已发布</td>
-                        <td class="text-center">
-                            <a href="javascript:;" class="btn btn-default btn-xs">编辑</a>
-                            <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>随便一个名称</td>
-                        <td>小小</td>
-                        <td>潮科技</td>
-                        <td class="text-center">2016/10/07</td>
-                        <td class="text-center">已发布</td>
-                        <td class="text-center">
-                            <a href="javascript:;" class="btn btn-default btn-xs">编辑</a>
-                            <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>随便一个名称</td>
-                        <td>小小</td>
-                        <td>潮科技</td>
-                        <td class="text-center">2016/10/07</td>
-                        <td class="text-center">已发布</td>
-                        <td class="text-center">
-                            <a href="javascript:;" class="btn btn-default btn-xs">编辑</a>
-                            <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
-                        </td>
-                    </tr> -->
+            <td>随便一个名称</td>
+            <td>小小</td>
+            <td>潮科技</td>
+            <td class="text-center">2016/10/07</td>
+            <td class="text-center">已发布</td>
+            <td class="text-center">
+              <a href="javascript:;" class="btn btn-default btn-xs">编辑</a>
+              <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
+            </td>
+          </tr>
+          <tr>
+            <td>随便一个名称</td>
+            <td>小小</td>
+            <td>潮科技</td>
+            <td class="text-center">2016/10/07</td>
+            <td class="text-center">已发布</td>
+            <td class="text-center">
+              <a href="javascript:;" class="btn btn-default btn-xs">编辑</a>
+              <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
+            </td>
+          </tr>
+          <tr>
+            <td>随便一个名称</td>
+            <td>小小</td>
+            <td>潮科技</td>
+            <td class="text-center">2016/10/07</td>
+            <td class="text-center">已发布</td>
+            <td class="text-center">
+              <a href="javascript:;" class="btn btn-default btn-xs">编辑</a>
+              <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
+            </td>
+          </tr> -->
                 </tbody>
             </table>
         </div>
@@ -139,138 +140,118 @@
             </li>
         </ul>
     </div>
-    <script src="../assets/vendors/art-template/template-web.js"></script>
+
     <script src="../assets/vendors/jquery/jquery.js"></script>
     <script src="../assets/vendors/bootstrap/js/bootstrap.js"></script>
+    <script src="../assets/vendors/art-template/template-web.js"></script>
 
-    <script type="text/html" id="postTpl">
+    <script type="text/html" id="pTpl">
         {{each records}}
         <tr>
             <td>{{$value.title}}</td>
             <td>{{$value.author.nickName}}</td>
             <td>{{$value.category.title}}</td>
             <td class="text-center">{{$value.createAt && $value.createAt.substr(0,10)}}</td>
-            <td class="text-center">{{$value.state==1?'已发布':'草稿'}}</td>
+            <td class="text-center">{{$value.state == 1 ? '已发布' : '草稿'}}</td>
             <td class="text-center">
-                <a href="javascript:;" class="btn btn-default btn-xs">编辑</a>
+                <a href="javascript:;" class="btn btn-default btn-xs ">编辑</a>
                 <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
             </td>
         </tr>
         {{/each}}
 
     </script>
+
+
     <script type="text/html" id="pageTpl">
         {{if page > 1}}
-        <li><a href="javascript:;" onclick="changePage({{page-1}})">上一页</a></li>
+        <li><a href="javascript:;" onclick="changePage({{page - 1}})">上一页</a></li>
         {{/if}} {{each display}}
         <li class="{{$value == page ? 'active' : ''}}"><a href="javascript:;" onclick="changePage({{$value}})">{{$value}}</a></li>
         {{/each}} {{if page
-        < pages}} <li><a href="javascript:;" onclick="changePage({{page-0+1}})">下一页</a></li>
+        < pages}} <li><a href="javascript:;" onclick="changePage({{page - 0 + 1}})">下一页</a></li>
             {{/if}}
+
     </script>
-    <script type="text/html" id="categoryTpl">
+
+    <script type="text/html" id="cTpl">
         {{each list}}
         <option value="{{$value._id}}">{{$value.title}}</option>
         {{/each}}
-
     </script>
 
     <script>
-        //获取文章列表
-        $.ajax({
+        $('#logout').on('click', function() {
+            var isConfirm = confirm('您真的要退出吗?');
+            if (isConfirm) {
+                // alert('用户点击了确认按钮')
+                $.ajax({
+                    type: 'post',
+                    url: '/logout',
+                    success: function() {
+                        location.href = 'login.html';
+                    },
+                    error: function() {
+                        alert('退出失败')
+                    }
+                })
+            }
+        });
+        // 显示所有的文章  
+        /*
+        1.需要向服务器发起请求 
+        2.构建模板 
+        3.渲染数据 
+        */
+        var s = $('#state').val();
+        var c = $('#category').val();
+
+        function render(category = 'all', state = 'all', page = 1) {
+            $.ajax({
                 type: 'get',
                 url: '/posts',
                 data: {
-                    category: 'all',
-                    state: 'all',
-                    page: 1
+                    page: page,
+                    category: category,
+                    state: state
                 },
                 success: function(res) {
-                    console.log(res);
-                    render(res)
+                    // console.log(res);
+                    var str = template('pTpl', res);
+                    $('tbody').html(str);
                     var pageStr = template('pageTpl', res);
-                    $('#pageBox').html(pageStr)
+                    $('.pagination').html(pageStr);
                 }
-
-            })
-            // 文章分类
-            // 1. 获取分类数据
+            });
+        }
+        render();
+        // 分页的效果  
+        function changePage(index) {
+            render(c, s, index);
+        }
+        // 将所有的分类展示到这个页面上
         $.ajax({
             type: 'get',
             url: '/categories',
             success: function(res) {
                 // console.log(res);
-                var strs = template('categoryTpl', {
+                var str = template('cTpl', {
                     list: res
-                })
-                $('#allSort').append(strs)
+                });
+                $('#category').append(str);
             }
-        })
+        });
+        // 给筛选按钮注册点击事件 
+        $('#btnSearch').on('click', function() {
+            c = $('#category').val();
+            s = $('#state').val();
 
-        //定义changePage函数
-        //分页
-        function changePage(page) {
-            // alert(page)
-            $.ajax({
-                type: 'get',
-                url: '/posts',
-                data: {
-                    category: 'all',
-                    state: 'all',
-                    page: page
-                },
-                success: function(res) {
-                    // console.log(res);
-                    // psotArr = res.records
-                    // psotArr = res
-
-                    // console.log(psotArr);
-                    render(res)
-                    var pageStr = template('pageTpl', res);
-                    $('#pageBox').html(pageStr)
-                }
-
-            })
-
-        }
-
-        //点击筛选按钮时
-        $('#formBtn').on('click', function() {
-            // alert('qqq')
-            //获取表单内容
-            var formData = $('#filterForm').serialize();
-            // console.log(formData);
-
-            // 获取文章列表
-            $.ajax({
-                type: 'get',
-                url: '/posts',
-                data: formData,
-                success: function(res) {
-                    console.log(res);
-                    render(res)
-                    var pageStr = template('pageTpl', res);
-                    $('#pageBox').html(pageStr)
-                }
-
-            })
-        })
-
-
-
-
-
-
-        function render(arr) {
-            var str = template('postTpl', arr)
-            $('tbody').html(str)
-        }
+            render(c, s);
+        });
     </script>
     <script>
         NProgress.done()
     </script>
-    <script src="../assets/js/conment.js"></script>
-
 </body>
 
 </html>
