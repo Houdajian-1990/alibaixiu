@@ -43,9 +43,9 @@
                             <h3 class="panel-title">站点内容统计：</h3>
                         </div>
                         <ul class="list-group">
-                            <li class="list-group-item"><strong>10</strong>篇文章（<strong>2</strong>篇草稿）</li>
-                            <li class="list-group-item"><strong>6</strong>个分类</li>
-                            <li class="list-group-item"><strong>5</strong>条评论（<strong>1</strong>条待审核）</li>
+                            <li class="list-group-item" id="wengzhang"></li>
+                            <li class="list-group-item" id="fenglei"></li>
+                            <li class="list-group-item" id="pinlun"></li>
                         </ul>
                     </div>
                 </div>
@@ -57,8 +57,8 @@
 
     <div class="aside">
         <div class="profile">
-            <img class="avatar" src="../uploads/avatar.jpg">
-            <h3 class="name">Coder</h3>
+            <img class="avatar" id="avatar" src="../uploads/avatar.jpg">
+            <h3 class="name" id="name">Coder</h3>
         </div>
         <ul class="nav">
             <li class="active">
@@ -99,5 +99,41 @@
     </script>
     <script src="../assets/js/conment.js"></script>
 </body>
+<script>
+    $.ajax({
+        type: 'get',
+        url: '/posts/count',
+        success: function(res) {
+            // console.log(res);
+            $('#wengzhang').html('<strong>' + res.postCount + '</strong>篇文章（<strong>' + res.draftCount + '</strong>篇草稿）')
+        }
+    })
+    $.ajax({
+        type: 'get',
+        url: '/categories/count',
+        success: function(res) {
+            // console.log(res);
+            $('#fenglei').html('<strong>' + res.categoryCount + '</strong>个分类')
+        }
+    })
+    $.ajax({
+            type: 'get',
+            url: '/comments/count',
+            success: function(res) {
+                console.log(res);
+                $('#pinlun').html('<strong>' + res.commentCount + '</strong>条评论')
+            }
+        })
+        //显示登录用户信息
+    $.ajax({
+        type: 'get',
+        url: '/users/' + userId,
+        success: function(res) {
+            // console.log(res);
+            $('#avatar').attr('src', res.avatar)
+            $('#name').html(res.nickName)
+        }
+    })
+</script>
 
 </html>

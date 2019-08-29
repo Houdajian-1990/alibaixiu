@@ -95,8 +95,8 @@
 
     <div class="aside">
         <div class="profile">
-            <img class="avatar" src="../uploads/avatar.jpg">
-            <h3 class="name">Coder</h3>
+            <img class="avatar" id="avatar" src="../uploads/avatar.jpg">
+            <h3 class="name" id="name">Coder</h3>
         </div>
         <ul class="nav">
             <li>
@@ -136,7 +136,18 @@
         NProgress.done()
     </script>
     <script src="../assets/js/conment.js"></script>
-
+    <script>
+        //显示登录用户信息
+        $.ajax({
+            type: 'get',
+            url: '/users/' + userId,
+            success: function(res) {
+                // console.log(res);
+                $('#avatar').attr('src', res.avatar)
+                $('#name').html(res.nickName)
+            }
+        })
+    </script>
 </body>
 
 </html>

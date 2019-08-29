@@ -1,5 +1,7 @@
 <script src="/login/status"></script>
+
 <script>
+    // console.log(userId);
     if (!isLogin) {
         location.href = 'login.html'
     }
@@ -40,17 +42,18 @@
       </div> -->
             <div class="row">
                 <div class="col-md-4">
-                    <form>
+                    <form id="form">
                         <h2>添加新轮播内容</h2>
                         <div class="form-group">
                             <label for="image">图片</label>
                             <!-- show when image chose -->
-                            <img class="help-block thumbnail" style="display: none">
+                            <img class="help-block thumbnail" style="display: none" id="imgg">
                             <input id="image" class="form-control" name="image" type="file">
                         </div>
+                        <input type="hidden" name="image" id="img">
                         <div class="form-group">
                             <label for="text">文本</label>
-                            <input id="text" class="form-control" name="text" type="text" placeholder="文本">
+                            <input id="text" class="form-control" name="title" type="text" placeholder="文本">
                         </div>
                         <div class="form-group">
                             <label for="link">链接</label>
@@ -72,7 +75,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <!-- <tr>
                                 <td class="text-center"><img class="slide" src="../uploads/slide_1.jpg"></td>
                                 <td>XIU功能演示</td>
                                 <td>#</td>
@@ -87,7 +90,7 @@
                                 <td class="text-center">
                                     <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
                                 </td>
-                            </tr>
+                            </tr> -->
                         </tbody>
                     </table>
                 </div>
@@ -97,8 +100,8 @@
 
     <div class="aside">
         <div class="profile">
-            <img class="avatar" src="../uploads/avatar.jpg">
-            <h3 class="name">Coder</h3>
+            <img class="avatar" id="avatar" src="../uploads/avatar.jpg">
+            <h3 class="name" id="name">Coder</h3>
         </div>
         <ul class="nav">
             <li>
@@ -131,14 +134,117 @@
             </li>
         </ul>
     </div>
-
+    <script type="text/html" id="slidesTpl">
+        {{each list}}
+        <tr>
+            <td class="text-center"><img class="slide" src="{{$value.image}}"></td>
+            <td>{{$value.title}}</td>
+            <td>{{$value.link}}</td>
+            <td class="text-center">
+                <a href="javascript:;" class="btn btn-danger btn-xs delete" data-id="{{$value._id}}">删除</a>
+            </td>
+        </tr>
+        {{/each}}
+    </script>
     <script src="../assets/vendors/jquery/jquery.js"></script>
     <script src="../assets/vendors/bootstrap/js/bootstrap.js"></script>
+    <script src="../assets/vendors/art-template/template-web.js"></script>
     <script>
         NProgress.done()
     </script>
     <script src="../assets/js/conment.js"></script>
+    <script>
+        $.ajax({
+                type: 'get',
+                url: '/slides',
+                success: function(res) {
+                    // console.log(res);
+                    imageArr = res;
+                    render()
+                }
+            })
+            //
+        $('#image').on('change', function() {
+            var file = this.files[0];
+            // console.log(file);
 
+            var formData = new FormData();
+            formData.append('image', file)
+
+
+            $.ajax({
+                type: 'post',
+                url: '/upload',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(res) {
+                    // console.log(res[0].image);
+                    $('#img').val(res[0].image)
+                    $('#imgg').show().attr('src', res[0].image)
+                }
+
+            })
+        })
+        var imageArr = [];
+        $('#form').on('submit', function() {
+            var formData = $(this).serialize();
+            console.log(formData);
+
+            $.ajax({
+                type: 'post',
+                url: '/slides',
+                data: formData,
+                success: function(res) {
+                    imageArr.push(res);
+                    render()
+                    $('#form')[0].reset();
+                    // console.log(imageArr);
+                }
+            })
+
+
+
+            // alert('111')
+            return false
+        })
+
+        //点击删除按钮时
+        $('tbody').on('click', '.delete', function() {
+            // alert('aaa')
+            if (confirm('您真的要删除吗？')) {
+                var id = $(this).attr('data-id');
+                // console.log(id);
+                $.ajax({
+                    type: 'delete',
+                    url: '/slides/' + id,
+                    success: function(res) {
+                        var index = imageArr.findIndex(item => item._id == res._id);
+                        imageArr.splice(index, 1);
+                        render()
+                    }
+                })
+
+            }
+        })
+
+        function render() {
+            var html = template('slidesTpl', {
+                list: imageArr
+            })
+            $('tbody').html(html)
+        }
+        //显示登录用户信息
+        $.ajax({
+            type: 'get',
+            url: '/users/' + userId,
+            success: function(res) {
+                // console.log(res);
+                $('#avatar').attr('src', res.avatar)
+                $('#name').html(res.nickName)
+            }
+        })
+    </script>
 </body>
 
 </html>

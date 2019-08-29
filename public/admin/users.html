@@ -152,8 +152,8 @@
 
     <div class="aside">
         <div class="profile">
-            <img class="avatar" src="../uploads/avatar.jpg">
-            <h3 class="name">Coder</h3>
+            <img class="avatar" id="imgavatar" src="../uploads/avatar.jpg">
+            <h3 class="name" id="name">Coder</h3>
         </div>
         <ul class="nav">
             <li>
@@ -220,6 +220,8 @@
             type: 'get',
             url: '/users',
             success: function(res) {
+                console.log(res);
+
                 arr = res
                 render(arr)
 
@@ -356,33 +358,43 @@
             })
             //完成批量删除
         $('#allDel').on('click', function() {
-            // alert('aaa')
-            var ids = [];
-            var checkedUser = $('tbody').find('input').filter(':checked');
-            // console.log(checkedUser);
-            checkedUser.each(function(index, element) {
-                    // console.log(element);
-                    ids.push($(element).attr('data-id'));
-                })
-                // console.log(ids);
-            if (confirm('您真的要进行批量删除吗？')) {
-                $.ajax({
-                    type: 'delete',
-                    url: '/users/' + ids.join('-'),
-                    success: function(res) {
-                        // location.reload()
-                        res.forEach(value => {
-                            var indexxxx = arr.findIndex(item => item._id == value._id);
-                            arr.splice(indexxxx, 1);
-                            render(arr);
-                        });
-                    }
+                // alert('aaa')
+                var ids = [];
+                var checkedUser = $('tbody').find('input').filter(':checked');
+                // console.log(checkedUser);
+                checkedUser.each(function(index, element) {
+                        // console.log(element);
+                        ids.push($(element).attr('data-id'));
+                    })
+                    // console.log(ids);
+                if (confirm('您真的要进行批量删除吗？')) {
+                    $.ajax({
+                        type: 'delete',
+                        url: '/users/' + ids.join('-'),
+                        success: function(res) {
+                            // location.reload()
+                            res.forEach(value => {
+                                var indexxxx = arr.findIndex(item => item._id == value._id);
+                                arr.splice(indexxxx, 1);
+                                render(arr);
+                            });
+                        }
 
-                })
+                    })
+                }
+
+
+
+            })
+            //显示登录用户信息
+        $.ajax({
+            type: 'get',
+            url: '/users/' + userId,
+            success: function(res) {
+                // console.log(res);
+                $('#imgavatar').attr('src', res.avatar)
+                $('#name').html(res.nickName)
             }
-
-
-
         })
 
 
