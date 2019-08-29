@@ -152,8 +152,8 @@
             <td class="text-center">{{$value.createAt && $value.createAt.substr(0,10)}}</td>
             <td class="text-center">{{$value.state==1?'已发布':'草稿'}}</td>
             <td class="text-center">
-                <a href="javascript:;" class="btn btn-default btn-xs">编辑</a>
-                <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
+                <a href="post-add.html?id={{$value._id}}" class="btn btn-default btn-xs">编辑</a>
+                <a href="javascript:;" class="btn btn-danger btn-xs delete" data-id="{{$value._id}}">删除</a>
             </td>
         </tr>
         {{/each}}
@@ -256,7 +256,24 @@
             })
         })
 
+        //点击删除按钮时
+        $('tbody').on('click', '.delete', function() {
+            if (confirm('您确实要删除吗？')) {
+                // alert('aaa')
+                var id = $(this).attr('data-id');
+                // console.log(id);
+                $.ajax({
+                    type: 'delete',
+                    url: '/posts/' + id,
+                    success: function() {
+                        location.reload();
 
+                    }
+                })
+            }
+
+
+        })
 
 
 

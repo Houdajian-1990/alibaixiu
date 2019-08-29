@@ -77,6 +77,7 @@
                     </div>
                     <div class="form-group">
                         <button class="btn btn-primary" type="button" id="pAdd">保存</button>
+                        <button class="btn btn-primary" type="button" style="display: none" id="pEdit">编辑</button>
                     </div>
                 </div>
             </form>
@@ -193,6 +194,75 @@
                 }
             });
         });
+        //从浏览器地址栏上获取id参数
+        var id = getUrlparams('id')
+            // console.log(id);
+        if (id != -1) {
+            $.ajax({
+                type: 'get',
+                url: '/posts/' + id,
+                success: function(res) {
+                    // console.log(res);
+                    $('#title').val(res.title);
+                    $('#content').val(res.content);
+                    $('h1').text('编辑文章');
+                    //预览图片
+                    $('#prev').show().attr('src', res.thumbnail);
+                    $('#img').val(res.thumbnail);
+                    //显示分类
+                    $('#category > option').each((index, item) => {
+                        //判断option的value值于res.category是否相等，相等则选择
+                        // console.log(item);
+                        if ($(item).attr('value') == res.category) {
+                            $(item).prop('selected', true)
+                        }
+
+                    });
+                    $('#status > option').each((index, item) => {
+                        // console.log(item);
+                        if ($(item).attr('value') == res.state) {
+                            $(item).prop('selected', true)
+                        }
+
+                    });
+                    //显示时间
+                    $('#created').val(res.createAt && res.createAt.substr(0, 16));
+                    $('#pAdd').hide();
+                    $('#pEdit').show();
+                }
+            })
+        }
+
+        //点击编辑按钮时
+        $('#pEdit').on('click', function() {
+            // alert('aaa')
+            // console.log(id);
+            // console.log($('form').serialize());
+            $.ajax({
+                type: 'put',
+                url: '/posts/' + id,
+                data: $('form').serialize(),
+                success: function(res) {
+                    location.href = 'posts.html'
+                        // console.log(res);
+
+                }
+            })
+
+
+        })
+
+        function getUrlparams(name) {
+            var paramsAry = location.search.substr(1).split('&');
+            // console.log(paramsAry);
+            for (var i = 0; i < paramsAry.length; i++) {
+                var tmp = paramsAry[i].split('=');
+                if (tmp[0] == name) {
+                    return paramsAry[i].split('=')[1];
+                }
+            }
+            return -1
+        }
     </script>
 </body>
 
