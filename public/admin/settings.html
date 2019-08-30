@@ -165,38 +165,39 @@
 
         })
         $('#form').on('submit', function() {
-            // alert('aaa')
-            // console.log($(this).serialize());
+                // alert('aaa')
+                // console.log($(this).serialize());
 
-            $.ajax({
-                type: 'post',
-                url: '/settings',
-                data: $(this).serialize(),
-                success: function(res) {
-                    // console.log(res);
-                    location.reload()
+                $.ajax({
+                    type: 'post',
+                    url: '/settings',
+                    data: $(this).serialize(),
+                    success: function(res) {
+                        console.log(res);
+                        // location.reload()
 
-                }
-            })
-            return false
-        })
-        $.ajax({
-                type: 'get',
-                url: '/settings',
-                success: function(res) {
-                    // console.log(res);
-                    if (res) {
-                        $('#site_name').val(res.title);
-                        $('#site_description').val(res.description);
-                        $('#site_keywords').val(res.keywords);
-                        $('#imgg').attr('src', res.logo);
-                        $('#comment_status').prop('checked', res.comment);
-                        $('#comment_reviewed').prop('checked', res.review);
                     }
-
-                }
+                })
+                return false
             })
-            //显示登录用户信息
+            //渲染网页信息
+            // $.ajax({
+            //         type: 'get',
+            //         url: '/settings',
+            //         success: function(res) {
+            //             // console.log(res);
+            //             if (res) {
+            //                 $('#site_name').val(res.title);
+            //                 $('#site_description').val(res.description);
+            //                 $('#site_keywords').val(res.keywords);
+            //                 $('#imgg').attr('src', res.logo);
+            //                 $('#comment_status').prop('checked', res.comment);
+            //                 $('#comment_reviewed').prop('checked', res.review);
+            //             }
+
+        //         }
+        //     })
+        //显示登录用户信息
     </script>
 </body>
 

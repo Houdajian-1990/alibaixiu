@@ -55,7 +55,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="danger">
+                    <!-- <tr class="danger">
                         <td>大大</td>
                         <td>楼主好人，顶一个</td>
                         <td>《Hello world》</td>
@@ -87,7 +87,7 @@
                             <a href="post-add.html" class="btn btn-warning btn-xs">驳回</a>
                             <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
                         </td>
-                    </tr>
+                    </tr> -->
                 </tbody>
             </table>
         </div>
@@ -132,10 +132,26 @@
 
     <script src="../assets/vendors/jquery/jquery.js"></script>
     <script src="../assets/vendors/bootstrap/js/bootstrap.js"></script>
+    <script src="../assets/vendors/art-template/template-web.js"></script>
     <script>
         NProgress.done()
     </script>
     <script src="../assets/js/conment.js"></script>
+    <script type="text/html" id="comTpl">
+        {{each list}}
+        <tr>
+            <td>{{$value.author.nickName}}</td>
+            <td>{{$value.content}}</td>
+            <td>{{$value.post.title}}</td>
+            <td>{{$value.createAt && $value.createAt.substr(0,10)}}</td>
+            <td>{{$value.author.status==1?'激活':'未激活'}}</td>
+            <td class="text-center">
+                <a href="post-add.html" class="btn btn-info btn-xs">批准</a>
+                <a href="javascript:;" class="btn btn-danger btn-xs delete" data-id="{{$value._id}}">删除</a>
+            </td>
+        </tr>
+        {{/each}}
+    </script>
     <script>
         //显示登录用户信息
         $.ajax({
@@ -146,6 +162,56 @@
                 $('#avatar').attr('src', res.avatar)
                 $('#name').html(res.nickName)
             }
+        })
+        var commentsArr = [];
+        //创建评论
+        // for (var i = 0; i < 13; i++) {
+        //     $.ajax({
+        //         type: 'post',
+        //         url: '/comments',
+        //         data: {
+        //             post: '5d650ea75dc4fe30fc00b6b9',
+        //             author: '5d63988b4e10f93528bcd665',
+        //             content: '文章很精彩' + i,
+        //             createAt: '2019-03-17T06:51:20.552Z'
+        //         },
+        //         success: function(res) {
+        //             // console.log(res, 111);
+        //         }
+        //     })
+        // }
+
+        $.ajax({
+            type: 'get',
+            url: '/comments',
+            success: function(res) {
+                commentsArr = res.records;
+                // console.log(commentsArr);
+                render()
+            }
+        })
+
+        function render() {
+            var str = template('comTpl', {
+                list: commentsArr
+            })
+            $('tbody').html(str)
+        }
+        $('tbody').on('click', '.delete', function() {
+            // alert('aaa')
+            if (confirm('您真的要删除吗？')) {
+                var id = $(this).attr('data-id');
+                // console.log(id);
+                $.ajax({
+                    type: 'delete',
+                    url: '/comments/' + id,
+                    success: function() {
+                        location.reload()
+                    }
+                })
+            }
+
+
         })
     </script>
 </body>

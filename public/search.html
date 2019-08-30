@@ -10,11 +10,12 @@
         }
         return -1
     }
-    var categoryId = getUrlparams('categoryId')
-        // console.log(categoryId);
-    if (categoryId == -1) {
-        location.href = 'index.html'
-    }
+    var key = getUrlparams('key')
+        // console.log(key);
+
+    // if (categoryId == -1) {
+    //     location.href = 'index.html'
+    // }
 </script>
 
 <!DOCTYPE html>
@@ -298,8 +299,8 @@
             <a href="detail.html?categoryId={{$value._id}}">{{$value.title}}</a>
         </div>
         <div class="main">
-            <p class="info">{{$value.author.nickName}} 发表于 {{$value.createAt.substr(0,10)}}</p>
-            <p class="brief">{{$value.content.substr(0,80)}}</p>
+            <p class="info">{{$value.author.nickName}} 发表于 {{$value.createAt&&$value.createAt.substr(0,10)}}</p>
+            <p class="brief">{{$value.content}}</p>
             <p class="extra">
                 <span class="reading">阅读({{$value.meta.comments}})</span>
                 <span class="comment">评论({{$value.meta.views}})</span>
@@ -384,11 +385,26 @@
             }
         })
         //根据分类查询文章列表
+        // $.ajax({
+        //     type: 'get',
+        //     url: '/posts/category/' + categoryId,
+        //     success: function(res) {
+        //         // console.log(res);
+        //         var strs = template('newTpl', {
+        //             list: res
+        //         })
+        //         $('#news').html(strs)
+        //     }
+        // })
+
+
+    //获取到浏览器地址栏中的关键字
+    //发送搜索ajax
     $.ajax({
         type: 'get',
-        url: '/posts/category/' + categoryId,
+        url: '/posts/search/' + key,
         success: function(res) {
-            // console.log(res);
+            console.log(res);
             var strs = template('newTpl', {
                 list: res
             })
